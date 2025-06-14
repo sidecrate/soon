@@ -148,6 +148,11 @@
             <i class="fab fa-github text-xl"></i>
             <span class="font-medium">GitHub</span>
         </a>
+        <a href="https://instagram.com/sidecrate"
+           class="social-link instagram-link flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-[#E1306C] to-[#C13456] text-white rounded-full hover:from-[#C13456] hover:to-[#E1306C] transition-all duration-300 shadow-lg">
+            <i class="fab fa-instagram text-lg"></i>
+            <span class="font-medium">Instagram</span>
+        </a>
     </div>
 
     <!-- Newsletter Signup -->
@@ -225,8 +230,24 @@
         const email = emailInput.value.trim();
 
         if (email && email.includes('@')) {
-            showNotification('Thank you! We\'ll notify you when we launch.', 'success');
-            emailInput.value = '';
+            fetch('https://data.s2c.ovh/subscripe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to subscribe');
+                    return response.json();
+                })
+                .then(() => {
+                    showNotification('Thank you! We\'ll notify you when we launch.', 'success');
+                    emailInput.value = '';
+                })
+                .catch(() => {
+                    showNotification('Subscription failed. Please try again later.', 'error');
+                });
         } else {
             showNotification('Please enter a valid email address.', 'error');
         }
